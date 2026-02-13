@@ -122,6 +122,61 @@
 }
 </style>
 
+
+<style>
+
+/* ===== PREMIUM BACKGROUND ANIMATION ===== */
+@keyframes ultraGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.ultra-bg {
+  background: linear-gradient(-45deg,#0f172a,#1e293b,#1e1b4b,#0f172a);
+  background-size: 400% 400%;
+  animation: ultraGradient 25s ease infinite;
+}
+
+/* ===== GLASS EFFECT ===== */
+.glass-panel {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+/* ===== CARD HOVER 3D ===== */
+.card-3d {
+  transition: transform .4s ease, box-shadow .4s ease;
+}
+.card-3d:hover {
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 20px 40px rgba(0,0,0,.4);
+}
+
+/* ===== TOP RANK GLOW ===== */
+@keyframes premiumGlow {
+  0% { box-shadow: 0 0 15px rgba(255,0,0,.5); }
+  50% { box-shadow: 0 0 45px rgba(255,0,0,.9); }
+  100% { box-shadow: 0 0 15px rgba(255,0,0,.5); }
+}
+
+.top-premium {
+  animation: premiumGlow 1.6s infinite;
+}
+
+/* ===== FADE ZOOM ===== */
+@keyframes premiumFadeZoom {
+  0% { opacity:0; transform:scale(.96); }
+  100% { opacity:1; transform:scale(1); }
+}
+
+.slide-premium-animate {
+  animation: premiumFadeZoom .7s ease;
+}
+
+</style>
+
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 text-gray-800">
   <button id="fullscreenBtn" title="สลับโหมดเต็มจอ (Shift+F)">⛶ เต็มจอ</button>
@@ -427,6 +482,26 @@ function onDataChanged(){
 // =========================================================================================
 // 💡 MODIFIED: displaySlide FUNCTION
 // =========================================================================================
+
+function getAlertLevelBadge(employeeCount, maxCount){
+  if(maxCount === 0) return "";
+  const percentage = (employeeCount / maxCount) * 100;
+
+  if(percentage >= 80){
+    return `<div class="text-[11px] mt-1 bg-red-700 text-white px-3 py-1 rounded-full shadow-lg animate-pulse font-semibold">
+    🚨 ต้องเร่งด่วน
+    </div>`;
+  }else if(percentage >= 50){
+    return `<div class="text-[11px] mt-1 bg-orange-500 text-white px-3 py-1 rounded-full shadow-md font-semibold">
+    📌 ควรติดตาม
+    </div>`;
+  }else{
+    return `<div class="text-[11px] mt-1 bg-green-600 text-white px-3 py-1 rounded-full shadow-md font-semibold">
+    ✅ อยู่ในเกณฑ์
+    </div>`;
+  }
+}
+
 function displaySlide(index, opts={silent:false}){
   const lineGroups=getLineGroups(); 
   const currentLine=lineGroups[index]; 
@@ -442,7 +517,7 @@ function displaySlide(index, opts={silent:false}){
   const maxCount = sorted.reduce((max, employee) => Math.max(max, employee.employee_count), 0);
   
   slideContent.innerHTML = `
-    <div class="bg-white rounded-2xl shadow-2xl p-6 ${animateClass}">
+    <div class="ultra-bg glass-panel rounded-2xl shadow-2xl p-6 slide-premium-animate">
       <div class="text-center mb-6">
         <h2 class="text-4xl font-bold text-indigo-700 mb-4">${escapeHtml(currentLine.lineName)}</h2>
         <div class="inline-block bg-indigo-100 text-indigo-800 px-6 py-3 rounded-full font-semibold text-lg">
@@ -482,10 +557,12 @@ function displaySlide(index, opts={silent:false}){
 
 
           return `
-              <div class="bg-gradient-to-b from-blue-50 to-indigo-50 rounded-lg p-3 ${borderClasses} shadow-md transition-all duration-300${alertClass}">
+              <div class="bg-gradient-to-b from-blue-50 to-indigo-50 rounded-lg p-3 ${borderClasses} shadow-md transition-all duration-300 card-3d${alertClass}">
                 <div class="text-center mb-2">
                   <div class="bg-indigo-600 text-white w-7 h-7 rounded-full flex items-center justify-center mx-auto mb-1 font-bold text-sm">${displayPosition}</div>
                   <div class="text-lg mt-1 ${emojiClass}">${emoji}</div>
+${idx === 0 ? `<div class="text-[10px] mt-1 bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse">⚠️ ต้องปรับปรุง</div>` : ""}
+
                   <div class="text-xs text-gray-500">ลำดับ ${displayPosition} (จำนวน ${employee.employee_count})</div>
                 </div>
                 <div class="flex justify-center mb-2">
@@ -535,6 +612,8 @@ function displaySlide(index, opts={silent:false}){
                 <div class="text-center mb-2">
                   <div class="bg-gray-400 text-white w-7 h-7 rounded-full flex items-center justify-center mx-auto mb-1 font-bold text-sm">${displayPosition}</div>
                   <div class="text-lg mt-1 ${emojiClass}">${emoji}</div>
+${idx === 0 ? `<div class="text-[10px] mt-1 bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse">⚠️ ต้องปรับปรุง</div>` : ""}
+
                 </div>
                 <div class="flex justify-center mb-2">
                   <div class="w-16 h-16 bg-gray-200 rounded-full border-2 border-gray-300 flex items-center justify-center">
