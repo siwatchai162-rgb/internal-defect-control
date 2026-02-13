@@ -94,6 +94,34 @@
 }
 </style>
 
+
+<style>
+@keyframes angryShake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-2px); }
+}
+@keyframes angryBlink {
+  0%   { box-shadow: 0 0 0 0 rgba(255,0,0,0.4); }
+  50%  { box-shadow: 0 0 18px 6px rgba(255,0,0,0.7); }
+  100% { box-shadow: 0 0 0 0 rgba(255,0,0,0.4); }
+}
+.emoji-angry {
+  animation: angryShake 0.4s infinite, angryBlink 1.2s infinite;
+}
+.emoji-think {
+  background: #fef9c3;
+  border-radius: 8px;
+  padding: 2px 6px;
+}
+.emoji-happy {
+  background: #dcfce7;
+  border-radius: 8px;
+  padding: 2px 6px;
+}
+</style>
+
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 text-gray-800">
   <button id="fullscreenBtn" title="สลับโหมดเต็มจอ (Shift+F)">⛶ เต็มจอ</button>
@@ -437,11 +465,27 @@ function displaySlide(index, opts={silent:false}){
           const isTop = (maxCount > 0 && employee.employee_count === maxCount);
           const alertClass = isTop ? " alert-blink" : "";
 
+          let emoji = "";
+          let emojiClass = "";
+
+          if (idx === 0 && employee.employee_count > 0) {
+            emoji = "😡";
+            emojiClass = "emoji-angry";
+          } else if (idx === 1 && employee.employee_count > 0) {
+            emoji = "🤔";
+            emojiClass = "emoji-think";
+          } else {
+            emoji = "😊";
+            emojiClass = "emoji-happy";
+          }
+
+
 
           return `
               <div class="bg-gradient-to-b from-blue-50 to-indigo-50 rounded-lg p-3 ${borderClasses} shadow-md transition-all duration-300${alertClass}">
                 <div class="text-center mb-2">
                   <div class="bg-indigo-600 text-white w-7 h-7 rounded-full flex items-center justify-center mx-auto mb-1 font-bold text-sm">${displayPosition}</div>
+                  <div class="text-lg mt-1 ${emojiClass}">${emoji}</div>
                   <div class="text-xs text-gray-500">ลำดับ ${displayPosition} (จำนวน ${employee.employee_count})</div>
                 </div>
                 <div class="flex justify-center mb-2">
@@ -490,6 +534,7 @@ function displaySlide(index, opts={silent:false}){
               <div class="bg-gray-100 rounded-lg p-3 border-2 border-gray-200 shadow-md opacity-50">
                 <div class="text-center mb-2">
                   <div class="bg-gray-400 text-white w-7 h-7 rounded-full flex items-center justify-center mx-auto mb-1 font-bold text-sm">${displayPosition}</div>
+                  <div class="text-lg mt-1 ${emojiClass}">${emoji}</div>
                 </div>
                 <div class="flex justify-center mb-2">
                   <div class="w-16 h-16 bg-gray-200 rounded-full border-2 border-gray-300 flex items-center justify-center">
